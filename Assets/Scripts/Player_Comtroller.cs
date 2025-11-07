@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,10 +8,10 @@ public class Player_Comtroller : MonoBehaviour
 
     private Transform P_transform;
     private CharacterController CharacterController;
-    
+
     private Vector2 Move_Inp;
-    private float Ver_velo ;
-    private float Turn_Velo ;
+    private float Ver_velo;
+    private float Turn_Velo;
     bool isDig = false;
     public GameObject Hole;
     public void OnMove(InputAction.CallbackContext context)
@@ -31,11 +30,12 @@ public class Player_Comtroller : MonoBehaviour
     }
     private void Update()
     {
+        DiggingHole();
         Vector3 P_pos = P_transform.position;
-            Vector3 charaforward = transform.forward;
-            Vector3 hole_pos = P_pos + charaforward;
-      var move_velo = new Vector3 (Move_Inp.x*P_speed,Ver_velo,Move_Inp.y*P_speed);
-      var moveDelta = move_velo*Time.deltaTime;
+        Vector3 charaforward = transform.forward;
+        Vector3 hole_pos = P_pos + charaforward;
+        var move_velo = new Vector3(Move_Inp.x * P_speed, Ver_velo, Move_Inp.y * P_speed);
+        var moveDelta = move_velo * Time.deltaTime;
         CharacterController.Move(moveDelta);
         if (Move_Inp != Vector2.zero)
         {
@@ -45,10 +45,33 @@ public class Player_Comtroller : MonoBehaviour
 
             P_transform.rotation = Quaternion.Euler(0, angleY, 0);
         }
-        if(isDig)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            
-            Instantiate(Hole, hole_pos, Quaternion.identity);
+            if (isDig == true)
+            {
+                Debug.Log("Šg’£‚µ‚Ü‚·");
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    Hole.transform.localScale = new Vector3(1f, 0, 1f)*Time.deltaTime;
+                }
+            }
+            else
+            {
+                Instantiate(Hole, hole_pos, Quaternion.identity);
+                Hole.tag = "Hole";
+            }
+        }
+    }
+    public void DiggingHole()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(gameObject.transform.position, Vector3.forward, out hit))
+        {
+            if (hit.collider.gameObject.tag == "Hole")
+            {
+                isDig = true;
+                Debug.Log("Šg’£‰Â”\");
+            }
         }
     }
 }
